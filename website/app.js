@@ -13,12 +13,12 @@ const errorElement = document.getElementById('error');
 // Initialize the webcam
 async function setupCamera() {
     try {
-        const stream = await navigator.mediaDevices.getUserMedia({ 
+        const stream = await navigator.mediaDevices.getUserMedia({
             video: { facingMode: 'user' },
-            audio: false 
+            audio: false
         });
         videoElement.srcObject = stream;
-        
+
         return new Promise((resolve) => {
             videoElement.onloadedmetadata = () => {
                 videoElement.play();
@@ -53,7 +53,7 @@ function calculateAngle(a, b, c) {
 // Draw keypoints and connections on canvas
 function drawPose(pose) {
     canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
-    
+
     // Draw keypoints
     pose.keypoints.forEach(keypoint => {
         if (keypoint.score > 0.3) {
@@ -68,17 +68,17 @@ function drawPose(pose) {
 // Detect poses and count push-ups
 async function detectPose() {
     if (!detector) return;
-    
+
     // Match canvas size to video
     canvasElement.width = videoElement.videoWidth;
     canvasElement.height = videoElement.videoHeight;
-    
+
     try {
         const poses = await detector.estimatePoses(videoElement);
         if (poses.length > 0) {
             const pose = poses[0];
             drawPose(pose);
-            
+
             // Get relevant keypoints for push-up detection
             const leftShoulder = pose.keypoints[5];
             const leftElbow = pose.keypoints[7];
@@ -86,15 +86,15 @@ async function detectPose() {
             const rightShoulder = pose.keypoints[6];
             const rightElbow = pose.keypoints[8];
             const rightWrist = pose.keypoints[10];
-            
+
             if (leftShoulder.score > 0.3 && leftElbow.score > 0.3 && leftWrist.score > 0.3 &&
                 rightShoulder.score > 0.3 && rightElbow.score > 0.3 && rightWrist.score > 0.3) {
-                
+
                 // Calculate angles for both arms
                 const leftAngle = calculateAngle(leftShoulder, leftElbow, leftWrist);
                 const rightAngle = calculateAngle(rightShoulder, rightElbow, rightWrist);
                 const avgAngle = (leftAngle + rightAngle) / 2;
-                
+
                 const now = Date.now();
                 // Detect push-up motion
                 if (avgAngle < 90 && !isGoingDown && (now - lastPushUpTime) > 1000) {
@@ -112,7 +112,7 @@ async function detectPose() {
     } catch (error) {
         console.error('Error during pose detection:', error);
     }
-    
+
     requestAnimationFrame(detectPose);
 }
 
@@ -126,6 +126,17 @@ async function init() {
         console.error('Error initializing:', error);
         statusElement.textContent = 'Error initializing the application. Please refresh and try again.';
     }
+}
+
+// Send token from web app to Chrome extension
+function sendTokenToExtension(token) {
+    chrome.runtime.sendMessage(
+        'your-extension-id', // extension ID (optional, can be omitted if sending to the active extension)
+        { token: token },
+        function(response) {
+            console.log('Response from extension:', response);
+        }
+    );
 }
 
 // Start the application when the page loads
