@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Push-up Tracker</title>
+    <link rel="stylesheet" href="styles.css">
+    <!-- TensorFlow.js -->
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.11.0"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/pose-detection@0.0.6"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>Push-up Tracker</h1>
+        <div class="video-container">
+            <video id="webcam" playsinline></video>
+            <canvas id="output-canvas"></canvas>
+        </div>
+        <div class="stats">
+            <div id="counter">Push-ups: 0</div>
+            <div id="status">Getting ready...</div>
+        </div>
+        <div id="error" class="error-message"></div>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html>
