@@ -1,38 +1,126 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Exercise Tracker</title>
+    <title>EarnIt - Exercise Tracker</title>
     <link rel="stylesheet" href="styles.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <!-- TensorFlow.js -->
-    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.11.0"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/pose-detection@0.0.6"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.11.0/dist/tf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/pose-detection@2.0.0/dist/pose-detection.min.js"></script>
 </head>
 
 <body>
     <div class="container">
-        <h1>Exercise Tracker</h1>
-        <div class="exercise-selector">
-            <label for="exercise-type">Select Exercise:</label>
-            <select id="exercise-type">
-                <option value="pushup">Push-ups</option>
-                <option value="pullup">Pull-ups</option>
-            </select>
-        </div>
-        <div class="video-container">
-            <video id="webcam" playsinline></video>
-            <canvas id="output-canvas"></canvas>
-        </div>
-        <div class="stats">
-            <div id="counter">Push-ups: 0</div>
-            <div id="status">Getting ready...</div>
+        <header>
+            <div class="logo">
+                <i class="fas fa-dumbbell"></i>
+                <h1>EarnIt Exercise Tracker</h1>
+            </div>
+            <p class="subtitle">Real-time exercise tracking powered by AI</p>
+        </header>
+
+        <main class="content">
+            <div class="video-section">
+                <div class="video-container">
+                    <video id="webcam" playsinline></video>
+                    <canvas id="output-canvas"></canvas>
+                    <div class="camera-overlay">
+                        <div class="camera-guide">
+                            <i class="fas fa-crosshairs"></i>
+                            Position yourself in frame
+                        </div>
+                    </div>
+                    <div class="video-controls">
+                        <button class="control-btn" id="flip-camera">
+                            <i class="fas fa-camera-rotate"></i>
+                        </button>
+                        <button class="control-btn" id="start-session">
+                            <i class="fas fa-play"></i>
+                        </button>
+                        <button class="control-btn" id="pause-session">
+                            <i class="fas fa-pause"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="exercise-options">
+                <button class="exercise-btn active" data-exercise="pushups">
+                    <i class="fas fa-person-falling"></i>
+                    Push-ups
+                </button>
+                <button class="exercise-btn" data-exercise="pullups">
+                    <i class="fas fa-arrow-up-from-bracket"></i>
+                    Pull-ups
+                </button>
+                <button class="exercise-btn" data-exercise="squats">
+                    <i class="fas fa-person"></i>
+                    Squats
+                </button>
+            </div>
+
+            <div class="stats-container">
+                <div class="donut-chart">
+                    <svg width="200" height="200" viewBox="0 0 200 200">
+                        <circle cx="100" cy="100" r="80" fill="none" stroke="var(--error-color)" stroke-width="20" opacity="0.2"/>
+                        <circle cx="100" cy="100" r="80" fill="none" stroke="var(--success-color)" stroke-width="20"
+                                stroke-dasharray="502.4" stroke-dashoffset="401.92"
+                                transform="rotate(-90 100 100)" class="progress-ring"/>
+                    </svg>
+                    <div class="chart-label">
+                        <div class="percentage">20.0%</div>
+                        <div class="label">Accuracy</div>
+                    </div>
+                </div>
+                <div class="stats-text">
+                    <div class="correct"><i class="fas fa-check"></i> Correct Form: 20.0%</div>
+                    <div class="wrong"><i class="fas fa-xmark"></i> Incorrect Form: 80.0%</div>
+                </div>
+            </div>
+
+            <div class="stats">
+                <div class="stats-header">
+                    <div id="counter">Push-ups: 0</div>
+                    <div id="status" class="pulse">Getting ready...</div>
+                </div>
+                <div class="session-stats">
+                    <div class="stat-item">
+                        <i class="fas fa-clock"></i>
+                        <span class="stat-label">Session Time</span>
+                        <span class="stat-value" id="session-time">00:00</span>
+                    </div>
+                    <div class="stat-item">
+                        <i class="fas fa-fire"></i>
+                        <span class="stat-label">Calories</span>
+                        <span class="stat-value" id="calories">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <i class="fas fa-heart-pulse"></i>
+                        <span class="stat-label">Avg. Speed</span>
+                        <span class="stat-value" id="avg-speed">0 reps/min</span>
+                    </div>
+                </div>
+            </div>
+        </main>
+        <div class="achievements-popup" id="achievement">
+            <i class="fas fa-trophy"></i>
+            <div class="achievement-content">
+                <h3>Achievement Unlocked!</h3>
+                <p>First 10 Push-ups Complete</p>
+            </div>
         </div>
 
         <button id="finishWorkout">Finish Workout</button>
         <div id="error" class="error-message"></div>
     </div>
+
+    <!-- Load our scripts -->
     <script src="app.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
