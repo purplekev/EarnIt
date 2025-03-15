@@ -1,16 +1,24 @@
 
 {
   "manifest_version": 3,
-  "name": "TODO: name",
+  "name": "EarnIt",
   "version": "1.0",
-  "description": "TODO: description",
+  "description": "Replace the chase with real, earned dopamine.",
+
+  "icons": {
+    "16": "logo.png",
+    "48": "logo.png",
+    "128": "logo.png"
+  },
 
   "permissions": ["storage", "tabs", "scripting", "webNavigation"],
 
   "background": {
     "service_worker": "background.js"
   },
+
   "action": {
+    "default_icon": "logo.png",
     "default_popup": "popup.html"
   },
 
