@@ -3,6 +3,10 @@ let exerciseCount = 0;
 let isGoingDown = false;
 let lastExerciseTime = 0;
 let currentExercise = 'pushup';
+let isReadyForPullups = false;
+let readyStateStartTime = 0;
+let sessionStarted = false;
+const READY_STATE_DURATION = 2000; // 2 seconds to hold position at start
 
 let videoElement;
 let canvasElement;
@@ -98,6 +102,11 @@ async function detectPose() {
                 const avgAngle = (leftAngle + rightAngle) / 2;
                 const now = Date.now();
 
+                // Calculate hand position relative to shoulders
+                const avgWristY = (leftWrist.y + rightWrist.y) / 2;
+                const avgShoulderY = (leftShoulder.y + rightShoulder.y) / 2;
+                const handsAboveShoulders = avgWristY < avgShoulderY;
+
                 if (currentExercise === 'pushup') {
                     // Push-up detection logic
                     if (avgAngle < 90 && !isGoingDown && (now - lastExerciseTime) > 1000) {
@@ -112,18 +121,37 @@ async function detectPose() {
                     }
                 } else {
                     // Pull-up detection logic
-                    const shoulderY = (leftShoulder.y + rightShoulder.y) / 2;
-                    const chinAboveShoulder = nose.y < shoulderY - 20; // Threshold for chin over bar
-
-                    if (!isGoingDown && chinAboveShoulder && (now - lastExerciseTime) > 1000) {
-                        isGoingDown = true;
-                        statusElement.textContent = 'Chin above bar...';
-                    } else if (isGoingDown && !chinAboveShoulder) {
-                        exerciseCount++;
-                        isGoingDown = false;
-                        lastExerciseTime = now;
-                        counterElement.textContent = `Pull-ups: ${exerciseCount}`;
-                        statusElement.textContent = 'Pull-up counted! Keep going!';
+                    if (!sessionStarted) {
+                        // Initial setup phase - only happens once at the start
+                        if (avgAngle > 150 && handsAboveShoulders) { // Arms extended and hands above shoulders
+                            if (readyStateStartTime === 0) {
+                                readyStateStartTime = now;
+                                statusElement.textContent = 'Hold position to start...';
+                            } else if (now - readyStateStartTime >= READY_STATE_DURATION) {
+                                sessionStarted = true;
+                                isReadyForPullups = true;
+                                statusElement.textContent = 'Ready! Start pulling up';
+                            }
+                        } else {
+                            readyStateStartTime = 0;
+                            statusElement.textContent = handsAboveShoulders ? 'Extend arms fully to start' : 'Raise hands above shoulders to start';
+                        }
+                    } else {
+                        // Normal pull-up counting after session has started
+                        if (!handsAboveShoulders && isGoingDown) {
+                            // If hands drop below shoulders during a rep, cancel it
+                            isGoingDown = false;
+                            statusElement.textContent = 'Keep hands above shoulders';
+                        } else if (avgAngle > 150 && handsAboveShoulders && !isGoingDown && (now - lastExerciseTime) > 1000) {
+                            isGoingDown = true;
+                            statusElement.textContent = 'Pulling up...';
+                        } else if (avgAngle < 70 && isGoingDown && handsAboveShoulders) {
+                            exerciseCount++;
+                            isGoingDown = false;
+                            lastExerciseTime = now;
+                            counterElement.textContent = `Pull-ups: ${exerciseCount}`;
+                            statusElement.textContent = 'Pull-up counted! Keep going!';
+                        }
                     }
                 }
             }
@@ -151,6 +179,9 @@ async function init() {
         currentExercise = e.target.value;
         exerciseCount = 0;
         isGoingDown = false;
+        isReadyForPullups = false;
+        readyStateStartTime = 0;
+        sessionStarted = false;  // Reset session when changing exercise
         counterElement.textContent = `${currentExercise === 'pushup' ? 'Push-ups' : 'Pull-ups'}: 0`;
         statusElement.textContent = `Ready to count ${currentExercise === 'pushup' ? 'push-ups' : 'pull-ups'}!`;
     });
