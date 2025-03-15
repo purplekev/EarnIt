@@ -34,7 +34,8 @@ h1 {
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-#webcam, #output-canvas {
+#webcam,
+#output-canvas {
     width: 100%;
     height: auto;
     display: block;
@@ -77,16 +78,41 @@ h1 {
     display: none;
 }
 
+.exercise-selector {
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.exercise-selector label {
+    margin-right: 10px;
+    font-size: 1.1rem;
+    color: #333;
+}
+
+.exercise-selector select {
+    padding: 8px 15px;
+    font-size: 1rem;
+    border: 2px solid #2c3e50;
+    border-radius: 6px;
+    background-color: white;
+    cursor: pointer;
+}
+
+.exercise-selector select:focus {
+    outline: none;
+    border-color: #3498db;
+}
+
 @media (max-width: 768px) {
     .container {
         padding: 10px;
     }
-    
+
     h1 {
         font-size: 2rem;
     }
-    
+
     #counter {
         font-size: 1.5rem;
     }
-}   
+}
