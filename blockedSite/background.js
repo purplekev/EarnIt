@@ -18,6 +18,7 @@ chrome.webNavigation.onBeforeNavigate.addListener(
     const { blockedSites, redirectEnabled, redirectUrl, timeOff } = await getStorageData();
 
       if (redirectEnabled && blockedSites.some((site) => details.url.includes(site))) {
+        console.log(details.url);
         chrome.storage.local.set({ originalUrl: details.url });
         chrome.tabs.update(details.tabId, { url: redirectUrl });
         console.log("Redirecting to:", redirectUrl);

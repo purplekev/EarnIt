@@ -13,7 +13,19 @@ let errorElement;
 let exerciseSelector;
 
 document.getElementById("finishWorkout").addEventListener("click", function() {
-    window.postMessage({ type: "FROM_EXTENSION", data: `${exerciseCount}` }, "*");
+    window.postMessage({ type: "FROM_WEB_APP", data: `${exerciseCount}` }, "*");
+});
+
+window.addEventListener("message", async (event) => {
+    if (event.source !== window || event.data.type !== "FROM_EXT") return;
+
+    window.location.href = event.data.url;
+    console.log("Received data from Chrome extension:", event.data.url);
+    // chrome.storage.local.set({timeOff: Number(event.data.data)});
+    // chrome.storage.local.set({redirectEnabled: false});
+    //
+    // // Example: Display received message in the webpage
+    // document.getElementById('status').textContent = "Received: " + event.data.data;
 });
 
 // Initialize the webcam
