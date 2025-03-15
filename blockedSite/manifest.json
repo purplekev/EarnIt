@@ -1,0 +1,18 @@
+
+{
+  "manifest_version": 3,
+  "name": "TODO: name",
+  "version": "1.0",
+  "description": "TODO: description",
+
+  "permissions": ["storage", "tabs", "scripting", "webNavigation"],
+
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_popup": "popup.html"
+  },
+
+  "host_permissions": ["<all_urls>"]
+}

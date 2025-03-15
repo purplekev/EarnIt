@@ -1,24 +1,26 @@
 let detector;
-let pushUpCount = 0;
+let exerciseCount = 0;
 let isGoingDown = false;
-let lastPushUpTime = 0;
+let lastExerciseTime = 0;
+let currentExercise = 'pushup';
 
-const videoElement = document.getElementById('webcam');
-const canvasElement = document.getElementById('output-canvas');
-const canvasCtx = canvasElement.getContext('2d');
-const counterElement = document.getElementById('counter');
-const statusElement = document.getElementById('status');
-const errorElement = document.getElementById('error');
+let videoElement;
+let canvasElement;
+let canvasCtx;
+let counterElement;
+let statusElement;
+let errorElement;
+let exerciseSelector;
 
 // Initialize the webcam
 async function setupCamera() {
     try {
-        const stream = await navigator.mediaDevices.getUserMedia({ 
+        const stream = await navigator.mediaDevices.getUserMedia({
             video: { facingMode: 'user' },
-            audio: false 
+            audio: false
         });
         videoElement.srcObject = stream;
-        
+
         return new Promise((resolve) => {
             videoElement.onloadedmetadata = () => {
                 videoElement.play();
@@ -39,7 +41,7 @@ async function loadModel() {
         enableSmoothing: true
     };
     detector = await poseDetection.createDetector(poseDetection.SupportedModels.MoveNet, detectorConfig);
-    statusElement.textContent = 'Model loaded! Start doing push-ups!';
+    statusElement.textContent = `Ready to count ${currentExercise === 'pushup' ? 'push-ups' : 'pull-ups'}!`;
 }
 
 // Calculate angle between three points
@@ -53,7 +55,7 @@ function calculateAngle(a, b, c) {
 // Draw keypoints and connections on canvas
 function drawPose(pose) {
     canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
-    
+
     // Draw keypoints
     pose.keypoints.forEach(keypoint => {
         if (keypoint.score > 0.3) {
@@ -65,59 +67,94 @@ function drawPose(pose) {
     });
 }
 
-// Detect poses and count push-ups
+// Detect poses and count exercises
 async function detectPose() {
     if (!detector) return;
-    
+
     // Match canvas size to video
     canvasElement.width = videoElement.videoWidth;
     canvasElement.height = videoElement.videoHeight;
-    
+
     try {
         const poses = await detector.estimatePoses(videoElement);
         if (poses.length > 0) {
             const pose = poses[0];
             drawPose(pose);
-            
-            // Get relevant keypoints for push-up detection
+
+            // Get relevant keypoints
             const leftShoulder = pose.keypoints[5];
             const leftElbow = pose.keypoints[7];
             const leftWrist = pose.keypoints[9];
             const rightShoulder = pose.keypoints[6];
             const rightElbow = pose.keypoints[8];
             const rightWrist = pose.keypoints[10];
-            
+            const nose = pose.keypoints[0];
+
             if (leftShoulder.score > 0.3 && leftElbow.score > 0.3 && leftWrist.score > 0.3 &&
                 rightShoulder.score > 0.3 && rightElbow.score > 0.3 && rightWrist.score > 0.3) {
-                
-                // Calculate angles for both arms
+
                 const leftAngle = calculateAngle(leftShoulder, leftElbow, leftWrist);
                 const rightAngle = calculateAngle(rightShoulder, rightElbow, rightWrist);
                 const avgAngle = (leftAngle + rightAngle) / 2;
-                
                 const now = Date.now();
-                // Detect push-up motion
-                if (avgAngle < 90 && !isGoingDown && (now - lastPushUpTime) > 1000) {
-                    isGoingDown = true;
-                    statusElement.textContent = 'Going down...';
-                } else if (avgAngle > 160 && isGoingDown) {
-                    pushUpCount++;
-                    isGoingDown = false;
-                    lastPushUpTime = now;
-                    counterElement.textContent = `Push-ups: ${pushUpCount}`;
-                    statusElement.textContent = 'Push-up counted! Keep going!';
+
+                if (currentExercise === 'pushup') {
+                    // Push-up detection logic
+                    if (avgAngle < 90 && !isGoingDown && (now - lastExerciseTime) > 1000) {
+                        isGoingDown = true;
+                        statusElement.textContent = 'Going down...';
+                    } else if (avgAngle > 160 && isGoingDown) {
+                        exerciseCount++;
+                        isGoingDown = false;
+                        lastExerciseTime = now;
+                        counterElement.textContent = `Push-ups: ${exerciseCount}`;
+                        statusElement.textContent = 'Push-up counted! Keep going!';
+                    }
+                } else {
+                    // Pull-up detection logic
+                    const shoulderY = (leftShoulder.y + rightShoulder.y) / 2;
+                    const chinAboveShoulder = nose.y < shoulderY - 20; // Threshold for chin over bar
+
+                    if (!isGoingDown && chinAboveShoulder && (now - lastExerciseTime) > 1000) {
+                        isGoingDown = true;
+                        statusElement.textContent = 'Chin above bar...';
+                    } else if (isGoingDown && !chinAboveShoulder) {
+                        exerciseCount++;
+                        isGoingDown = false;
+                        lastExerciseTime = now;
+                        counterElement.textContent = `Pull-ups: ${exerciseCount}`;
+                        statusElement.textContent = 'Pull-up counted! Keep going!';
+                    }
                 }
             }
         }
     } catch (error) {
         console.error('Error during pose detection:', error);
     }
-    
+
     requestAnimationFrame(detectPose);
 }
 
 // Initialize the application
 async function init() {
+    // Initialize DOM elements
+    videoElement = document.getElementById('webcam');
+    canvasElement = document.getElementById('output-canvas');
+    canvasCtx = canvasElement.getContext('2d');
+    counterElement = document.getElementById('counter');
+    statusElement = document.getElementById('status');
+    errorElement = document.getElementById('error');
+    exerciseSelector = document.getElementById('exercise-type');
+
+    // Add event listener for exercise type change
+    exerciseSelector.addEventListener('change', (e) => {
+        currentExercise = e.target.value;
+        exerciseCount = 0;
+        isGoingDown = false;
+        counterElement.textContent = `${currentExercise === 'pushup' ? 'Push-ups' : 'Pull-ups'}: 0`;
+        statusElement.textContent = `Ready to count ${currentExercise === 'pushup' ? 'push-ups' : 'pull-ups'}!`;
+    });
+
     try {
         await setupCamera();
         await loadModel();

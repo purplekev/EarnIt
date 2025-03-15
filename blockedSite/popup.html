@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Redirector Control</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 10px; width: 300px; }
+    input, button { margin-top: 5px; }
+  </style>
+</head>
+<body>
+  <h3>Blocked Site Redirector</h3>
+
+  <!-- Toggle Switch -->
+  <label>
+    <input type="checkbox" id="toggleRedirect" checked>
+    Enable Redirection
+  </label>
+
+  <!-- Site Management -->
+  <h4>Manage Blocked Sites:</h4>
+  <ul id="siteList"></ul>
+
+  <input type="text" id="newSite" placeholder="Add site (e.g., example.com)">
+  <button id="addSite">Add</button>
+  <button id="addToken">ADDTOKEN</button>
+  <h4>Tokens Left: <input id="token" type="number" value="0">0</input></h4>
+
+  <script src="popup.js"></script>
+</body>
+</html>
