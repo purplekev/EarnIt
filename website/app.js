@@ -153,7 +153,7 @@ async function init() {
     counterElement = document.getElementById('counter');
     statusElement = document.getElementById('status');
     errorElement = document.getElementById('error');
-    exerciseSelector = document.getElementById('exercise-type');
+    exerciseSelector = document.getElementById('exercise-types');
 
     // Add event listener for exercise type change
     exerciseSelector.addEventListener('change', (e) => {
