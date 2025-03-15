@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const addToken = document.getElementById("addToken")
 
     // Load saved data
-    const { blockedSites = [], redirectEnabled = true, redirectDisabled = false } = await chrome.storage.local.get();
+    const { blockedSites = [], redirectEnabled = true, redirectDisabled = false,  timeOff = 0} = await chrome.storage.local.get();
 
     // Populate UI
     toggleRedirect.checked = redirectEnabled;
@@ -33,22 +33,22 @@ document.addEventListener("DOMContentLoaded", async () => {
     //     }
     // });
 
-    if (addToken) {
-        addToken.addEventListener('click', () => {
-            let tokenValue = Number(token.value) + 1;  // Use token.value to get the current value
-
-            // Update the displayed token count
-            token.value = tokenValue;  // Set token.value instead of tokenInput.value
-
-            // Check if token count exceeds 10
-            if (tokenValue >= 10) {
-                toggleRedirect.checked = false;
-                chrome.storage.local.set({ redirectEnabled: false });
-            }
-        });
-    } else {
-        console.error("Element with id 'addToken' not found!");
-    }
+    // if (addToken) {
+    //     addToken.addEventListener('click', () => {
+    //         let tokenValue = Number(token.value) + 1;  // Use token.value to get the current value
+    //
+    //         // Update the displayed token count
+    //         token.value = tokenValue;  // Set token.value instead of tokenInput.value
+    //
+    //         // Check if token count exceeds 10
+    //         if (tokenValue >= 10) {
+    //             toggleRedirect.checked = false;
+    //             chrome.storage.local.set({ redirectEnabled: false });
+    //         }
+    //     });
+    // } else {
+    //     console.error("Element with id 'addToken' not found!");
+    // }
 
 
     // token.addEventListener("change", () => {
@@ -68,10 +68,10 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
     });
   
-    // popup.js
-    document.getElementById('addToken').addEventListener('click', () => {
-      chrome.runtime.sendMessage({ type: 'messageToWebApp', data: 'Hello from extension!' });
-    });
+    // // popup.js
+    // document.getElementById('addToken').addEventListener('click', () => {
+    //   chrome.runtime.sendMessage({ type: 'messageToWebApp', data: 'Hello from extension!' });
+    // });
 
 
     // Add site to UI with remove button

@@ -12,6 +12,10 @@ let statusElement;
 let errorElement;
 let exerciseSelector;
 
+document.getElementById("finishWorkout").addEventListener("click", function() {
+    window.postMessage({ type: "FROM_EXTENSION", data: `${exerciseCount}` }, "*");
+});
+
 // Initialize the webcam
 async function setupCamera() {
     try {
@@ -110,6 +114,11 @@ async function detectPose() {
                         counterElement.textContent = `Push-ups: ${exerciseCount}`;
                         statusElement.textContent = 'Push-up counted! Keep going!';
                     }
+
+                    // if (Number(exerciseCount) === Number(targetValue)) {
+                        // chrome.storage.local.set({ redirectEnabled: false });
+                        // chrome.tabs.update(details.tabId, { url: redirectUrl });
+                    // }
                 } else {
                     // Pull-up detection logic
                     const shoulderY = (leftShoulder.y + rightShoulder.y) / 2;
@@ -144,7 +153,7 @@ async function init() {
     counterElement = document.getElementById('counter');
     statusElement = document.getElementById('status');
     errorElement = document.getElementById('error');
-    exerciseSelector = document.getElementById('exercise-type');
+    exerciseSelector = document.getElementById('exercise-types');
 
     // Add event listener for exercise type change
     exerciseSelector.addEventListener('change', (e) => {
