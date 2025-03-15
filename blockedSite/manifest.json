@@ -1,25 +1,18 @@
 
 {
-  "name": "My Chrome Extension",
+  "manifest_version": 3,
+  "name": "TODO: name",
   "version": "1.0",
-  "manifest_version": 2,
-  "permissions": ["tabs"],
+  "description": "TODO: description",
+
+  "permissions": ["storage", "tabs", "scripting", "webNavigation"],
+
   "background": {
-    "scripts": ["background.js"],
-    "persistent": false
+    "service_worker": "background.js"
   },
-  "browser_action": {
+  "action": {
     "default_popup": "popup.html"
   },
-  "content_scripts": [
-    {
-      "matches": ["<all_urls>"],
-      "js": ["content.js"]
-    }
-  ],
-  "commands": {
-    "messageToWebApp": {
-      "suggested_key": "Ctrl+Shift+Y"
-    }
-  }
+
+  "host_permissions": ["<all_urls>"]
 }

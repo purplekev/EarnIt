@@ -27,7 +27,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         token.value = tokenValue;  // Set token.value instead of tokenInput.value
 
         // Check if token count exceeds 10
-        if (tokenValue >= 1) {
+        if (tokenValue >= 10) {
             toggleRedirect.checked = false;
             chrome.storage.local.set({ redirectEnabled: false });
         }
