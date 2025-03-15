@@ -1,23 +1,25 @@
-chrome.webNavigation.onBeforeNavigate.addListener(async (details) => {
-    const { url } = details;
-  
-    const { blockedSites = [], redirectEnabled = true, redirectUrl = "http://127.0.0.1:5500/EarnIt/website/index.html" } = await chrome.storage.local.get();
-  
-    if (redirectEnabled && blockedSites.some((site) => url.includes(site))) {
-      chrome.tabs.update(details.tabId, { url: redirectUrl });
-      console.log("Redirecting to:", redirectUrl);
-    }
+const CHALLENGE_PAGE = "http://localhost:63342/EarnIt/website/index.html?_ijt=ndh1kupicnstgaro90vc20jl5k";
 
-    // background.js
-    chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-      if (message.type === 'messageToWebApp') {
-        console.log(message.data);  // Handle the message from popup.js
-        // You can use chrome.tabs API to send the message to the web app's page
-        chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-          chrome.tabs.sendMessage(tabs[0].id, { type: 'messageFromBackground', data: message.data });
-        });
+const getStorageData = async () => {
+  const storedData = await chrome.storage.local.get(["blockedSites", "redirectEnabled", "redirectUrl", "timeOff"]);
+
+  return {
+    blockedSites: storedData.blockedSites || [],
+    redirectEnabled: storedData.redirectEnabled ?? true, // Ensures false is respected
+    redirectUrl: CHALLENGE_PAGE,
+    timeOff:  storedData.timeOff
+  };
+}
+
+chrome.webNavigation.onBeforeNavigate.addListener(
+
+  async (details) => {
+
+    const { blockedSites, redirectEnabled, redirectUrl, timeOff } = await getStorageData();
+
+      if (redirectEnabled && blockedSites.some((site) => details.url.includes(site))) {
+        chrome.storage.local.set({ originalUrl: details.url });
+        chrome.tabs.update(details.tabId, { url: redirectUrl });
+        console.log("Redirecting to:", redirectUrl);
       }
-    });
-
-  });
-  
+});

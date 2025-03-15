@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const addToken = document.getElementById("addToken")
 
     // Load saved data
-    const { blockedSites = [], redirectEnabled = true, redirectDisabled = false } = await chrome.storage.local.get();
+    const { blockedSites = [], redirectEnabled = true, redirectDisabled = false,  timeOff = 0} = await chrome.storage.local.get();
 
     // Populate UI
     toggleRedirect.checked = redirectEnabled;
@@ -27,9 +27,10 @@ document.addEventListener("DOMContentLoaded", async () => {
         token.value = tokenValue;  // Set token.value instead of tokenInput.value
 
         // Check if token count exceeds 10
-        if (tokenValue >= 10) {
+        if (tokenValue >= 3) {
             toggleRedirect.checked = false;
             chrome.storage.local.set({ redirectEnabled: false });
+            chrome.storage.local.set({tokenValue: tokenValue})
         }
     });
 
@@ -51,8 +52,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
   
     // popup.js
-    document.getElementById('addToken').addEventListener('click', () => {
-      chrome.runtime.sendMessage({ type: 'messageToWebApp', data: 'Hello from extension!' });
+    document.getElementById('addToken').addEventListener('click', async () => {
+      chrome.runtime.sendMessage({type: 'messageToWebApp', data: 'Hello from extension!'});
     });
 
 
