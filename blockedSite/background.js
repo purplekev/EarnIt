@@ -9,15 +9,15 @@ chrome.webNavigation.onBeforeNavigate.addListener(async (details) => {
     }
 
     // background.js
-    chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-      if (message.type === 'messageToWebApp') {
-        console.log(message.data);  // Handle the message from popup.js
-        // You can use chrome.tabs API to send the message to the web app's page
-        chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-          chrome.tabs.sendMessage(tabs[0].id, { type: 'messageFromBackground', data: message.data });
-        });
-      }
-    });
+    // chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+    //   if (message.type === 'messageToWebApp') {
+    //     console.log(message.data);  // Handle the message from popup.js
+    //     // You can use chrome.tabs API to send the message to the web app's page
+    //     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+    //       chrome.tabs.sendMessage(tabs[0].id, { type: 'messageFromBackground', data: message.data });
+    //     });
+    //   }
+    // });
 
   });
   
