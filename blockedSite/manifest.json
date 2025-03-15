@@ -1,16 +1,25 @@
+
 {
-    "manifest_version": 3,
-    "name": "Blocked Site Redirector",
-    "version": "1.1",
-    "permissions": ["storage", "webNavigation"],
-    "background": {
-      "service_worker": "background.js"
-    },
-    "action": {
-      "default_popup": "popup.html",
-      "default_title": "Blocked Site Redirector"
-    },
-    "description": "Redirects from blocked sites to a safer place.",
-    "host_permissions": ["<all_urls>"]
+  "name": "My Chrome Extension",
+  "version": "1.0",
+  "manifest_version": 2,
+  "permissions": ["tabs"],
+  "background": {
+    "scripts": ["background.js"],
+    "persistent": false
+  },
+  "browser_action": {
+    "default_popup": "popup.html"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"]
+    }
+  ],
+  "commands": {
+    "messageToWebApp": {
+      "suggested_key": "Ctrl+Shift+Y"
+    }
   }
-  
+}

@@ -128,16 +128,5 @@ async function init() {
     }
 }
 
-// Send token from web app to Chrome extension
-function sendTokenToExtension(token) {
-    chrome.runtime.sendMessage(
-        'your-extension-id', // extension ID (optional, can be omitted if sending to the active extension)
-        { token: token },
-        function(response) {
-            console.log('Response from extension:', response);
-        }
-    );
-}
-
 // Start the application when the page loads
 window.onload = init;

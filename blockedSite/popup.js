@@ -50,6 +50,12 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
     });
   
+    // popup.js
+    document.getElementById('addToken').addEventListener('click', () => {
+      chrome.runtime.sendMessage({ type: 'messageToWebApp', data: 'Hello from extension!' });
+    });
+
+
     // Add site to UI with remove button
     function addSiteToList(site) {
       const li = document.createElement("li");
@@ -67,25 +73,4 @@ document.addEventListener("DOMContentLoaded", async () => {
       li.appendChild(removeBtn);
       siteList.appendChild(li);
     }
-
-    chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-      if (message.token > 10) {
-          // Perform the desired action in your extension
-          console.log('Token is greater than 10:', message.token);
-          
-          // Example: Change something in the extension
-          // (could be UI updates, setting a flag, etc.)
-          chrome.storage.local.set({ 'tokenStatus': 'active' });
-  
-          // Send response back if needed
-          sendResponse({ status: 'success' });
-      } else {
-          sendResponse({ status: 'token too low' });
-      }
-      // Keep the message channel open until response is sent
-      return true;
-    });
-  
-    
   });
-  
