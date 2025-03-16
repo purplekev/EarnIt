@@ -19,44 +19,6 @@ document.addEventListener("DOMContentLoaded", async () => {
       chrome.storage.local.set({ redirectEnabled: toggleRedirect.checked });
     });
 
-    // // Event listener for the button click
-    // addToken.addEventListener("click", () => {
-    //     let tokenValue = Number(token.value) + 1;  // Use token.value to get the current value
-
-    //     // Update the displayed token count
-    //     token.value = tokenValue;  // Set token.value instead of tokenInput.value
-
-    //     // Check if token count exceeds 10
-    //     if (tokenValue >= 10) {
-    //         toggleRedirect.checked = false;
-    //         chrome.storage.local.set({ redirectEnabled: false });
-    //     }
-    // });
-
-    // if (addToken) {
-    //     addToken.addEventListener('click', () => {
-    //         let tokenValue = Number(token.value) + 1;  // Use token.value to get the current value
-    //
-    //         // Update the displayed token count
-    //         token.value = tokenValue;  // Set token.value instead of tokenInput.value
-    //
-    //         // Check if token count exceeds 10
-    //         if (tokenValue >= 10) {
-    //             toggleRedirect.checked = false;
-    //             chrome.storage.local.set({ redirectEnabled: false });
-    //         }
-    //     });
-    // } else {
-    //     console.error("Element with id 'addToken' not found!");
-    // }
-
-
-    // token.addEventListener("change", () => {
-    //     if (token.value > 10) {
-    //         chrome.storage.local.set({ redirectEnabled: toggleRedirect.checked });
-    //     }
-    // })
-
     // Add site
     addSite.addEventListener("click", () => {
       const site = newSite.value.trim();
@@ -67,12 +29,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         newSite.value = "";
       }
     });
-  
-    // // popup.js
-    // document.getElementById('addToken').addEventListener('click', () => {
-    //   chrome.runtime.sendMessage({ type: 'messageToWebApp', data: 'Hello from extension!' });
-    // });
-
 
     // Add site to UI with remove button
     function addSiteToList(site) {
