@@ -107,6 +107,18 @@
       color: #c0392b;
     }
 
+    #productiveSitesHeader {
+      color: rgb(106, 199, 106);
+    }
+
+    #sitesBlockedHeader {
+      color: rgb(253, 89, 89);
+    }
+
+    #minutesAvailableHeader {
+      width: 80px;
+    }
+
     .input-container {
       display: flex;
       gap: 10px;
@@ -126,8 +138,12 @@
     Enable Redirection
   </label>
 
+  <div class="input-container" style="display: flex; align-items: center;">
+    <h3 style="margin-bottom: 0; margin-right: 0px; font-weight: bold;" id=" minutesAvailableHeader">Minutes Avaliable:</h3>
+    <input id="token" type="number" value="0" style="vertical-align: middle;">
+  </div>
   <!-- Site Management -->
-  <h2 style="margin-bottom: 5px;">Sites Blocked:</h2>
+  <h2 style="margin-bottom: 5px;" id="sitesBlockedHeader">Sites Blocked:</h2>
   <ul id="siteList"></ul>
 
   <div class="input-container">
@@ -141,6 +157,15 @@
   <ul id="recommendedSites"></ul>
   <!-- <button id="addToken">ADDTOKEN</button> -->
 
+
+  <!-- Add this after the blocked sites section -->
+  <h2 style="margin-bottom: 5px;" id="productiveSitesHeader">Productive Sites:</h2>
+  <ul id="productiveSiteList"></ul>
+
+  <div class="input-container">
+    <input type="text" id="productiveSiteInput" placeholder="add site (e.g. duolingo.com)">
+    <button id="addProductiveSiteBtn">Add</button>
+  </div>
   <div class="input-container" style="display: flex; align-items: center;">
     <h3 style="margin-bottom: 0; margin-right: 10px; font-weight: bold;">Tokens:</h3>
     <input id="token" type="number" value="0" style="vertical-align: middle;">
@@ -165,5 +190,4 @@
 
   <script src="popup.js"></script>
 </body>
-
 </html>

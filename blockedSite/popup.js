@@ -1,15 +1,18 @@
 document.addEventListener("DOMContentLoaded", async () => {
 
   const recommendedList = document.getElementById("recommendedSites");
+  const disableRequestBtn = document.getElementById("disableRequest");
+  const storedEmailDisplay = document.getElementById("storedEmail");
+  const emailList = document.getElementById("emailList");
   const toggleRedirect = document.getElementById("toggleRedirect");
   const siteList = document.getElementById("siteList");
   const newSite = document.getElementById("newSite");
   const addSite = document.getElementById("addSite");
   const token = document.getElementById("token");
-  const addToken = document.getElementById("addToken")
-  const disableRequestBtn = document.getElementById("disableRequest");
-  const storedEmailDisplay = document.getElementById("storedEmail");
-  const emailList = document.getElementById("emailList");
+  const addToken = document.getElementById("addToken");
+  const productiveSiteList = document.getElementById("productiveSiteList");
+  const productiveSiteInput = document.getElementById("productiveSiteInput");
+  const addProductiveSite = document.getElementById("addProductiveSiteBtn");
 
   // Load saved data
   const {
@@ -17,6 +20,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     redirectEnabled = true,
     redirectDisabled = false,
     timeOff = 0,
+    productiveSites = [],
+
     accountabilityEmail = null,
     disableRequestPending = false
   } = await chrome.storage.local.get();
@@ -25,6 +30,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   toggleRedirect.checked = redirectEnabled;
   toggleRedirect.unchecked = redirectDisabled
   blockedSites.forEach((site) => addSiteToList(site));
+  productiveSites.forEach((site) => addProductiveSiteToList(site));
 
   // Toggle redirect on/off
   toggleRedirect.addEventListener("change", () => {
@@ -76,6 +82,17 @@ chrome.storage.local.get("recommendedBlockedSites", (data) => {
       recommendedList.innerHTML = "<li>No recommendations yet.</li>";
   }
 });
+
+  // Add site
+  addSite.addEventListener("click", () => {
+    const site = newSite.value.trim();
+    if (site && !blockedSites.includes(site)) {
+      blockedSites.push(site);
+      chrome.storage.local.set({ blockedSites });
+      addSiteToList(site);
+      newSite.value = "";
+    }
+  });
 
     // Add site
     addSite.addEventListener("click", () => {
@@ -175,6 +192,50 @@ chrome.storage.local.get("recommendedBlockedSites", (data) => {
       chrome.storage.local.set({ accountabilityEmail: email });
       displayAccountabilityEmail(email);
       document.getElementById("newEmail").value = "";
+  // Add site to UI with remove button
+  function addSiteToList(site) {
+    const li = document.createElement("li");
+    li.textContent = site;
+    const removeBtn = document.createElement("button");
+    removeBtn.textContent = "Remove";
+    removeBtn.addEventListener("click", () => {
+      const index = blockedSites.indexOf(site);
+      if (index > -1) {
+        blockedSites.splice(index, 1);
+        chrome.storage.local.set({ blockedSites });
+        li.remove();
+      }
+    });
+    li.appendChild(removeBtn);
+    siteList.appendChild(li);
+  }
+
+  // Add productive site
+  addProductiveSite.addEventListener("click", () => {
+    const site = productiveSiteInput.value.trim();
+    if (site && !productiveSites.includes(site)) {
+      productiveSites.push(site);
+      chrome.storage.local.set({ productiveSites });
+      addProductiveSiteToList(site);
+      productiveSiteInput.value = "";
     }
   });
+
+  // Add productive site to UI with remove button
+  function addProductiveSiteToList(site) {
+    const li = document.createElement("li");
+    li.textContent = site;
+    const removeBtn = document.createElement("button");
+    removeBtn.textContent = "Remove";
+    removeBtn.addEventListener("click", () => {
+      const index = productiveSites.indexOf(site);
+      if (index > -1) {
+        productiveSites.splice(index, 1);
+        chrome.storage.local.set({ productiveSites });
+        li.remove();
+      }
+    });
+    li.appendChild(removeBtn);
+    productiveSiteList.appendChild(li);
+  }
 });
