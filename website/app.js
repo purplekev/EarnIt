@@ -59,7 +59,7 @@ function calculateAngle(a, b, c) {
 // Draw keypoints and connections on canvas
 function drawPose(pose) {
     canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
-
+    console.log("draw pose");
     // Draw keypoints
     pose.keypoints.forEach(keypoint => {
         if (keypoint.score > 0.3) {
@@ -153,16 +153,16 @@ async function init() {
     counterElement = document.getElementById('counter');
     statusElement = document.getElementById('status');
     errorElement = document.getElementById('error');
-    // exerciseSelector = document.getElementById('exercise-types');
+    exerciseSelector = document.getElementById('exercise-types');
 
     // // Add event listener for exercise type change
-    // exerciseSelector.addEventListener('change', (e) => {
-    //     currentExercise = e.target.value;
-    //     exerciseCount = 0;
-    //     isGoingDown = false;
-    //     counterElement.textContent = `${currentExercise === 'pushup' ? 'Push-ups' : 'Pull-ups'}: 0`;
-    //     statusElement.textContent = `Ready to count ${currentExercise === 'pushup' ? 'push-ups' : 'pull-ups'}!`;
-    // });
+    exerciseSelector.addEventListener('change', (e) => {
+        currentExercise = e.target.value;
+        exerciseCount = 0;
+        isGoingDown = false;
+        counterElement.textContent = `${currentExercise === 'pushup' ? 'Push-ups' : 'Pull-ups'}: 0`;
+        statusElement.textContent = `Ready to count ${currentExercise === 'pushup' ? 'push-ups' : 'pull-ups'}!`;
+    });
 
     try {
         await setupCamera();
