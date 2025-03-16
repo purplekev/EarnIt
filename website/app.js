@@ -13,7 +13,7 @@ let errorElement;
 let exerciseSelector;
 
 document.getElementById("finishWorkout").addEventListener("click", function() {
-    window.postMessage({ type: "FROM_EXTENSION", data: `${exerciseCount}` }, "*");
+    window.postMessage({ type: "FROM_WEB_APP", data: `${exerciseCount}` }, "*");
 });
 
 // Initialize the webcam
