@@ -54,7 +54,7 @@ chrome.storage.local.get("recommendedBlockedSites", (data) => {
           // Check if site is already blocked
           chrome.storage.local.get("blockedSites", (blockedData) => {
               let blockedSites = blockedData.blockedSites || [];
-              if (blockedSites.includes(`*://${domain}/*`)) {
+              if (blockedSites.includes(`${domain}`)) {
                   listItem.style.color = "gray";  // Already blocked
                   listItem.textContent = `${domain} (Blocked)`;
               } else {
@@ -172,7 +172,7 @@ chrome.storage.local.get("recommendedBlockedSites", (data) => {
     function blockSite(domain) {
       chrome.storage.local.get({ blockedSites: [] }, (data) => {
           let updatedSites = new Set(data.blockedSites);
-          updatedSites.add(`*://${domain}/*`);
+          updatedSites.add(`${domain}`);
 
           chrome.storage.local.set({ blockedSites: Array.from(updatedSites) }, () => {
               addSiteToList(domain); // Add the site to the UI list
