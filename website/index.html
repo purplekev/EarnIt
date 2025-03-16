@@ -22,9 +22,15 @@
         <header>
             <div class="logo">
                 <i class="fas fa-dumbbell"></i>
-                <h1>EarnIt</h1>
+                <h1>EarnIt - Fix your time</h1>
             </div>
-            <p class="subtitle">Replace the chase with real, earned dopamine</p>
+            <div class="header-content">
+                <p class="subtitle">Protect your time</p>
+            </div>
+            <button id="finishWorkout" class="continue-btn">
+                <i class="fas fa-arrow-right"></i>
+                <span>Spend Minutes Earned</span>
+            </button>
         </header>
 
         <main class="content">
@@ -38,75 +44,23 @@
                             Position yourself in frame
                         </div>
                     </div>
-                    <div class="video-controls">
-                        <button class="control-btn" id="flip-camera">
-                            <i class="fas fa-camera-rotate"></i>
-                        </button>
-                        <button class="control-btn" id="start-session">
-                            <i class="fas fa-play"></i>
-                        </button>
-                        <button class="control-btn" id="pause-session">
-                            <i class="fas fa-pause"></i>
-                        </button>
-                    </div>
+                </div>
+                <div id="exercise-types" class="exercise-selector">
+                    <h2 class="selector-title">Select Activity</h2>
+                    <select id="activity-select" class="activity-select">
+                        <option value="pushups">Push-ups</option>
+                        <option value="pullups">Pull-ups</option>
+                        <option value="squats">Squats</option>
+                        <option value="meditation">Meditation</option>
+                        <option value="reading">Reading</option>
+                    </select>
                 </div>
             </div>
-
-            <div id="exercise-types" class="exercise-options">
-                <button class="exercise-btn active" data-exercise="pushups">
-                    <i class="fas fa-person-falling"></i>
-                    Push-ups
-                </button>
-                <button class="exercise-btn" data-exercise="pullups">
-                    <i class="fas fa-arrow-up-from-bracket"></i>
-                    Pull-ups
-                </button>
-                <button class="exercise-btn" data-exercise="squats">
-                    <i class="fas fa-person"></i>
-                    Squats
-                </button>
-            </div>
-
-<!--            <div class="stats-container">-->
-<!--                <div class="donut-chart">-->
-<!--                    <svg width="200" height="200" viewBox="0 0 200 200">-->
-<!--                        <circle cx="100" cy="100" r="80" fill="none" stroke="var(&#45;&#45;error-color)" stroke-width="20" opacity="0.2"/>-->
-<!--                        <circle cx="100" cy="100" r="80" fill="none" stroke="var(&#45;&#45;success-color)" stroke-width="20"-->
-<!--                                stroke-dasharray="502.4" stroke-dashoffset="401.92"-->
-<!--                                transform="rotate(-90 100 100)" class="progress-ring"/>-->
-<!--                    </svg>-->
-<!--                    <div class="chart-label">-->
-<!--                        <div class="percentage">20.0%</div>-->
-<!--                        <div class="label">Accuracy</div>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--                <div class="stats-text">-->
-<!--                    <div class="correct"><i class="fas fa-check"></i> Correct Form: 20.0%</div>-->
-<!--                    <div class="wrong"><i class="fas fa-xmark"></i> Incorrect Form: 80.0%</div>-->
-<!--                </div>-->
-<!--            </div>-->
 
             <div class="stats">
                 <div class="stats-header">
-                    <div id="counter">Push-ups: 0</div>
+                    <div id="counter">Minutes earned: 0</div>
                     <div id="status" class="pulse">Getting ready...</div>
-                </div>
-                <div class="session-stats">
-                    <div class="stat-item">
-                        <i class="fas fa-clock"></i>
-                        <span class="stat-label">Session Time</span>
-                        <span class="stat-value" id="session-time">00:00</span>
-                    </div>
-                    <div class="stat-item">
-                        <i class="fas fa-fire"></i>
-                        <span class="stat-label">Calories</span>
-                        <span class="stat-value" id="calories">0</span>
-                    </div>
-                    <div class="stat-item">
-                        <i class="fas fa-heart-pulse"></i>
-                        <span class="stat-label">Avg. Speed</span>
-                        <span class="stat-value" id="avg-speed">0 reps/min</span>
-                    </div>
                 </div>
             </div>
             <div class="charts-container">
@@ -129,9 +83,6 @@
                 <p>First 10 Push-ups Complete</p>
             </div>
         </div>
-
-        <button id="finishWorkout">Finish Workout</button>
-        <!-- <div id="error" class="error-message"></div> -->
     </div>
 
     <!-- Load our scripts -->
