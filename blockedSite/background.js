@@ -143,5 +143,5 @@ const setTimer = (sender, timeLimit, startTime) => {
 
     setTimeout(() => {
       chrome.tabs.update(sender.tab.id, { url: CHALLENGE_PAGE })
-    }, timeLimitMs);
+    }, 10000);
 }
