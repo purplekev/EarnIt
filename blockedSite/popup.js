@@ -151,7 +151,7 @@ chrome.storage.local.get("recommendedBlockedSites", (data) => {
   }
 
   async function updateTimeDisplays() {
-    const { urlStats = {} } = await chrome.storage.local.get('urlStats');
+    const {urlStats = {}} = await chrome.storage.local.get('urlStats');
 
     blockedSites.forEach(site => {
       const timeElement = document.getElementById(`time-${site.replace(/\./g, '-')}`);
