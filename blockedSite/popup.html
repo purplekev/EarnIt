@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <title>Redirector Control</title>
   <style>
@@ -42,7 +43,8 @@
       font-weight: 500;
     }
 
-    input, button {
+    input,
+    button {
       margin-top: 8px;
       border-radius: 8px;
       border: none;
@@ -50,7 +52,8 @@
       font-size: 14px;
     }
 
-    input[type="text"], input[type="number"] {
+    input[type="text"],
+    input[type="number"] {
       width: calc(100% - 20px);
       padding: 8px;
       border: 1px solid #1e3a5f;
@@ -104,15 +107,27 @@
       color: #c0392b;
     }
 
+    #productiveSitesHeader {
+      color: rgb(106, 199, 106);
+    }
+
+    #sitesBlockedHeader {
+      color: rgb(253, 89, 89);
+    }
+
+    #minutesAvailableHeader {
+      width: 80px;
+    }
+
     .input-container {
       display: flex;
       gap: 10px;
       justify-content: center;
       margin-bottom: 10px;
     }
-
   </style>
 </head>
+
 <body>
   <h1>EarnIt</h1>
   <h3>Replace the chase with real dopamine.</h3>
@@ -123,8 +138,12 @@
     Enable Redirection
   </label>
 
+  <div class="input-container" style="display: flex; align-items: center;">
+    <h3 style="margin-bottom: 0; margin-right: 0px; font-weight: bold;" id=" minutesAvailableHeader">Minutes Avaliable:</h3>
+    <input id="token" type="number" value="0" style="vertical-align: middle;">
+  </div>
   <!-- Site Management -->
-  <h2 style="margin-bottom: 5px;">Sites Blocked:</h2>
+  <h2 style="margin-bottom: 5px;" id="sitesBlockedHeader">Sites Blocked:</h2>
   <ul id="siteList"></ul>
 
   <div class="input-container">
@@ -134,13 +153,17 @@
 
   <!-- <button id="addToken">ADDTOKEN</button> -->
 
-<div class="input-container" style="display: flex; align-items: center;">
-  <h3 style="margin-bottom: 0; margin-right: 10px; font-weight: bold;">Tokens:</h3>
-  <input id="token" type="number" value="0" style="vertical-align: middle;">
-</div>
 
-  
+  <!-- Add this after the blocked sites section -->
+  <h2 style="margin-bottom: 5px;" id="productiveSitesHeader">Productive Sites:</h2>
+  <ul id="productiveSiteList"></ul>
+
+  <div class="input-container">
+    <input type="text" id="productiveSiteInput" placeholder="add site (e.g. duolingo.com)">
+    <button id="addProductiveSiteBtn">Add</button>
+  </div>
 
   <script src="popup.js"></script>
 </body>
+
 </html>
