@@ -1,106 +1,139 @@
 document.addEventListener('DOMContentLoaded', function () {
-    // Pie Chart (Accuracy)
-    const pieCtx = document.getElementById('pieChart').getContext('2d');
     const colors = {
-        pastelBlue: '#A2D5F2', // Pastel blue
-        navy: '#1E3A8A', // Navy
-        lightNavy: '#3B82F6', // Light navy
-        softBlue: '#BFDBFE', // Soft blue
-        navy: '#1E3A8A',       // Navy blue
-        pastelBlue: '#A2D5F2', // Coral
-        mint: '#B8E986',       // Mint green
-        lavender: '#CABBE9',   
-        peach: '#FFC3A0',     // Peach
-        softBlue: '#BFDBFE',
+        primary: '#2563eb',    // Primary blue
+        secondary: '#1e40af',  // Darker blue
+        success: '#3b82f6',    // Light blue
+        error: '#ef4444',      // Red
+        warning: '#f59e0b',    // Orange
+        purple: '#8b5cf6',     // Purple
+        pink: '#ec4899',       // Pink
+        teal: '#14b8a6',       // Teal
+        background: '#f8fafc', // Very light grey
+        textPrimary: '#1e293b' // Dark grey blue
     };
+
+    // Pie Chart
+    const pieCtx = document.getElementById('pieChart').getContext('2d');
     const pieChart = new Chart(pieCtx, {
-        type: 'pie',
+        type: 'doughnut',
         data: {
             labels: ['Youtube', 'Tik-Tok', 'Instagram', 'Facebook', 'Messenger', 'Twitter'],
             datasets: [{
-                data: [23.4, 15.6, 31.3, 7.8, 15.6, 6.3], // Example data (20% correct, 80% incorrect)
+                data: [23.4, 15.6, 31.3, 7.8, 15.6, 6.3],
                 backgroundColor: [
-                    colors.softBlue, // Correct form
-                    colors.navy,      // Incorrect form
-                    colors.pastelBlue,      // Segment 3
-                    colors.mint,       // Segment 4
-                    colors.lavender,   // Segment 5
-                    colors.peach       // Segment 6
+                    colors.primary,      // Youtube - Blue
+                    colors.error,        // TikTok - Red
+                    colors.purple,       // Instagram - Purple
+                    colors.warning,      // Facebook - Orange
+                    colors.teal,         // Messenger - Teal
+                    colors.pink          // Twitter - Pink
                 ],
-                borderWidth: 0
+                borderWidth: 0,
+                cutout: '75%',
+                borderRadius: 0          // Remove rounded edges between segments
             }]
         },
         options: {
             responsive: true,
-            maintainAspectRatio: false, // Allow chart to resize
+            maintainAspectRatio: false,
             plugins: {
                 legend: {
-                    position: 'bottom', // Legend at the bottom
+                    position: 'bottom',
                     labels: {
+                        padding: 20,
+                        usePointStyle: true,
+                        pointStyle: 'circle',
                         font: {
-                            size: 10 // Smaller legend font
-                        }
+                            size: 11,
+                            family: "'Inter', sans-serif",
+                            weight: '500'
+                        },
+                        color: colors.textPrimary
                     }
-                },
-                tooltip: {
-                    enabled: true
                 }
             }
         }
     });
 
-    // Bar Chart (Screen Time-like Graph)
+    // Bar Chart
     const barCtx = document.getElementById('barChart').getContext('2d');
     const barChart = new Chart(barCtx, {
         type: 'bar',
         data: {
-            labels: ['Youtube', 'Tik-Tok', 'Instagram', 'Facebook', 'Messenger', 'Twitter'], // Exercise types
+            labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
             datasets: [{
-                label: 'Reps Completed',
-                data: [15, 10, 20, 5, 10, 4, 8], // Example data
+                label: 'Time Saved',
+                data: [30, 45, 25, 60, 35, 40, 50],
                 backgroundColor: [
-                    colors.softBlue, // Correct form
-                    colors.navy,      // Incorrect form
-                    colors.pastelBlue,      // Segment 3
-                    colors.mint,       // Segment 4
-                    colors.lavender,   // Segment 5
-                    colors.peach       // Segment 6
+                    colors.primary,
+                    colors.purple,
+                    colors.teal,
+                    colors.warning,
+                    colors.error,
+                    colors.pink,
+                    colors.secondary
                 ],
-                borderWidth: 0
+                borderRadius: 8,
+                barThickness: 12,
+                maxBarThickness: 12
             }]
         },
         options: {
             responsive: true,
-            maintainAspectRatio: false, // Allow chart to resize
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                },
+                title: {
+                    display: true,
+                    text: 'Weekly Progress',
+                    padding: {
+                        bottom: 16
+                    },
+                    font: {
+                        size: 13,
+                        family: "'Inter', sans-serif",
+                        weight: '500'
+                    },
+                    color: colors.textPrimary
+                }
+            },
             scales: {
                 y: {
                     beginAtZero: true,
                     grid: {
-                        color: 'rgba(0, 0, 0, 0.05)' // Lighter grid lines
+                        color: colors.background,
+                        drawBorder: false
                     },
                     ticks: {
+                        color: colors.textPrimary,
                         font: {
-                            size: 8 // Smaller axis font
-                        }
+                            family: "'Inter', sans-serif",
+                            size: 11
+                        },
+                        padding: 8
+                    },
+                    border: {
+                        display: false
                     }
                 },
                 x: {
                     grid: {
-                        display: false // Remove x-axis grid lines
+                        display: false,
+                        drawBorder: false
                     },
                     ticks: {
+                        color: colors.textPrimary,
                         font: {
-                            size: 8 // Smaller axis font
-                        }
+                            family: "'Inter', sans-serif",
+                            size: 11
+                        },
+                        padding: 8
+                    },
+                    border: {
+                        display: false
                     }
-                }
-            },
-            plugins: {
-                legend: {
-                    display: false // Hide legend for bar chart
-                },
-                tooltip: {
-                    enabled: true
                 }
             }
         }
