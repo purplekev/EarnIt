@@ -1,14 +1,25 @@
 document.addEventListener("DOMContentLoaded", async () => {
-    const toggleRedirect = document.getElementById("toggleRedirect");
-    const siteList = document.getElementById("siteList");
-    const newSite = document.getElementById("newSite");
-    const addSite = document.getElementById("addSite");
-    const token = document.getElementById("token");
-    const addToken = document.getElementById("addToken")
-    const recommendedList = document.getElementById("recommendedSites");
+
+  const recommendedList = document.getElementById("recommendedSites");
+  const toggleRedirect = document.getElementById("toggleRedirect");
+  const siteList = document.getElementById("siteList");
+  const newSite = document.getElementById("newSite");
+  const addSite = document.getElementById("addSite");
+  const token = document.getElementById("token");
+  const addToken = document.getElementById("addToken")
+  const disableRequestBtn = document.getElementById("disableRequest");
+  const storedEmailDisplay = document.getElementById("storedEmail");
+  const emailList = document.getElementById("emailList");
 
   // Load saved data
-  const { blockedSites = [], redirectEnabled = true, redirectDisabled = false, timeOff = 0 } = await chrome.storage.local.get();
+  const {
+    blockedSites = [],
+    redirectEnabled = true,
+    redirectDisabled = false,
+    timeOff = 0,
+    accountabilityEmail = null,
+    disableRequestPending = false
+  } = await chrome.storage.local.get();
 
   // Populate UI
   toggleRedirect.checked = redirectEnabled;
@@ -71,10 +82,10 @@ chrome.storage.local.get("recommendedBlockedSites", (data) => {
     // if (addToken) {
     //     addToken.addEventListener('click', () => {
     //         let tokenValue = Number(token.value) + 1;  // Use token.value to get the current value
-
+    //
     //         // Update the displayed token count
     //         token.value = tokenValue;  // Set token.value instead of tokenInput.value
-
+    //
     //         // Check if token count exceeds 10
     //         if (tokenValue >= 10) {
     //             toggleRedirect.checked = false;
@@ -163,3 +174,54 @@ chrome.storage.local.get("recommendedBlockedSites", (data) => {
   }
 
 });
+
+  // Add site to UI with remove button
+  function addSiteToList(site) {
+    const li = document.createElement("li");
+    li.textContent = site;
+    const removeBtn = document.createElement("button");
+    removeBtn.textContent = "Remove";
+    removeBtn.addEventListener("click", () => {
+      const index = blockedSites.indexOf(site);
+      if (index > -1) {
+        blockedSites.splice(index, 1);
+        chrome.storage.local.set({ blockedSites });
+        li.remove();
+      }
+    });
+    li.appendChild(removeBtn);
+    siteList.appendChild(li);
+  }
+
+  // If there's a pending request, update UI accordingly
+  if (disableRequestPending) {
+    disableRequestBtn.textContent = "Request Pending...";
+    disableRequestBtn.disabled = true;
+  }
+
+  disableRequestBtn.addEventListener("click", async () => {
+    // Set the pending flag
+    await chrome.storage.local.set({ disableRequestPending: true });
+
+    // Update button state
+    disableRequestBtn.textContent = "Request Pending...";
+    disableRequestBtn.disabled = true;
+
+
+  });
+
+  // Modify the email display function
+  function displayAccountabilityEmail(email) {
+    const storedEmailDisplay = document.getElementById("storedEmail");
+    storedEmailDisplay.textContent = email || "No partner added";
+  }
+
+  // Add event listener for the accountability button
+  document.getElementById("add-accountability").addEventListener("click", () => {
+    const email = document.getElementById("newEmail").value.trim();
+    if (email) {
+      chrome.storage.local.set({ accountabilityEmail: email });
+      displayAccountabilityEmail(email);
+      document.getElementById("newEmail").value = "";
+    }
+  });
