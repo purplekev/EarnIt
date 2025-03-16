@@ -11,7 +11,7 @@
     "128": "logo.png"
   },
 
-  "permissions": ["storage", "tabs", "scripting", "webNavigation"],
+  "permissions": ["storage", "tabs", "scripting", "webNavigation", "history"],
 
   "background": {
     "service_worker": "background.js"

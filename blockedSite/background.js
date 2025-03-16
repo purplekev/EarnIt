@@ -23,3 +23,38 @@ chrome.webNavigation.onBeforeNavigate.addListener(
         console.log("Redirecting to:", redirectUrl);
       }
 });
+
+async function analyzeBrowsingHistory() {
+  chrome.history.search({text: '', maxResults: 100, startTime: Date.now() - (30 * 24 * 60 * 60 * 1000)}, (historyItems) => {
+      let domainCount = {};
+      // Count visits per domain
+      historyItems.forEach((item) => {
+          let url = new URL(item.url);
+          let domain = url.hostname;
+          if (domain.includes("google.com")) {
+            return;
+          }
+          else if (!domainCount[domain]) {
+              domainCount[domain] = 0;
+          }
+          domainCount[domain] += item.visitCount || 1;
+      });
+
+      // Sort by most visited
+      let sortedDomains = Object.entries(domainCount)
+          .sort((a, b) => b[1] - a[1])
+          .slice(0, 3); // Top 3 most visited domains
+
+      console.log("Top visited domains:", sortedDomains);
+
+      // Store results in Chrome storage
+      chrome.storage.local.set({ recommendedBlockedSites: sortedDomains });
+  });
+}
+
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (message.action === "analyzeHistory") {
+      analyzeBrowsingHistory();
+      sendResponse({ status: "History analyzed" });
+  }
+});
