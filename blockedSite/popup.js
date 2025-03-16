@@ -102,7 +102,7 @@ chrome.storage.local.get("recommendedBlockedSites", (data) => {
         newSite.value = "";
       }
     });
-  });
+
 
 
   function addSiteToList(site) {
