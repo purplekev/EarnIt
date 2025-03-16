@@ -77,32 +77,6 @@ chrome.storage.local.get("recommendedBlockedSites", (data) => {
   }
 });
 
-
-
-    // if (addToken) {
-    //     addToken.addEventListener('click', () => {
-    //         let tokenValue = Number(token.value) + 1;  // Use token.value to get the current value
-    //
-    //         // Update the displayed token count
-    //         token.value = tokenValue;  // Set token.value instead of tokenInput.value
-    //
-    //         // Check if token count exceeds 10
-    //         if (tokenValue >= 10) {
-    //             toggleRedirect.checked = false;
-    //             chrome.storage.local.set({ redirectEnabled: false });
-    //         }
-    //     });
-    // } else {
-    //     console.error("Element with id 'addToken' not found!");
-    // }
-
-
-    // token.addEventListener("change", () => {
-    //     if (token.value > 10) {
-    //         chrome.storage.local.set({ redirectEnabled: toggleRedirect.checked });
-    //     }
-    // })
-
     // Add site
     addSite.addEventListener("click", () => {
       const site = newSite.value.trim();
@@ -173,26 +147,6 @@ chrome.storage.local.get("recommendedBlockedSites", (data) => {
     });
   }
 
-});
-
-  // Add site to UI with remove button
-  function addSiteToList(site) {
-    const li = document.createElement("li");
-    li.textContent = site;
-    const removeBtn = document.createElement("button");
-    removeBtn.textContent = "Remove";
-    removeBtn.addEventListener("click", () => {
-      const index = blockedSites.indexOf(site);
-      if (index > -1) {
-        blockedSites.splice(index, 1);
-        chrome.storage.local.set({ blockedSites });
-        li.remove();
-      }
-    });
-    li.appendChild(removeBtn);
-    siteList.appendChild(li);
-  }
-
   // If there's a pending request, update UI accordingly
   if (disableRequestPending) {
     disableRequestBtn.textContent = "Request Pending...";
@@ -206,8 +160,6 @@ chrome.storage.local.get("recommendedBlockedSites", (data) => {
     // Update button state
     disableRequestBtn.textContent = "Request Pending...";
     disableRequestBtn.disabled = true;
-
-
   });
 
   // Modify the email display function
@@ -225,3 +177,4 @@ chrome.storage.local.get("recommendedBlockedSites", (data) => {
       document.getElementById("newEmail").value = "";
     }
   });
+});
