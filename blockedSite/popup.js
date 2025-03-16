@@ -2,14 +2,11 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   const recommendedList = document.getElementById("recommendedSites");
   const disableRequestBtn = document.getElementById("disableRequest");
-  const storedEmailDisplay = document.getElementById("storedEmail");
-  const emailList = document.getElementById("emailList");
+
   const toggleRedirect = document.getElementById("toggleRedirect");
   const siteList = document.getElementById("siteList");
   const newSite = document.getElementById("newSite");
   const addSite = document.getElementById("addSite");
-  const token = document.getElementById("token");
-  const addToken = document.getElementById("addToken");
   const productiveSiteList = document.getElementById("productiveSiteList");
   const productiveSiteInput = document.getElementById("productiveSiteInput");
   const addProductiveSite = document.getElementById("addProductiveSiteBtn");
@@ -189,26 +186,12 @@ chrome.storage.local.get("recommendedBlockedSites", (data) => {
   document.getElementById("add-accountability").addEventListener("click", () => {
     const email = document.getElementById("newEmail").value.trim();
     if (email) {
-      chrome.storage.local.set({ accountabilityEmail: email });
+      chrome.storage.local.set({accountabilityEmail: email});
       displayAccountabilityEmail(email);
       document.getElementById("newEmail").value = "";
-  // Add site to UI with remove button
-  function addSiteToList(site) {
-    const li = document.createElement("li");
-    li.textContent = site;
-    const removeBtn = document.createElement("button");
-    removeBtn.textContent = "Remove";
-    removeBtn.addEventListener("click", () => {
-      const index = blockedSites.indexOf(site);
-      if (index > -1) {
-        blockedSites.splice(index, 1);
-        chrome.storage.local.set({ blockedSites });
-        li.remove();
-      }
-    });
-    li.appendChild(removeBtn);
-    siteList.appendChild(li);
-  }
+    }
+  });
+
 
   // Add productive site
   addProductiveSite.addEventListener("click", () => {
