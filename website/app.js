@@ -13,7 +13,7 @@ let errorElement;
 let exerciseSelector;
 
 document.getElementById("finishWorkout").addEventListener("click", function() {
-    window.postMessage({ type: "FROM_EXTENSION", data: `${exerciseCount}` }, "*");
+    window.postMessage({ type: "FROM_WEB_APP", data: `${exerciseCount}` }, "*");
 });
 
 // Initialize the webcam
@@ -59,7 +59,7 @@ function calculateAngle(a, b, c) {
 // Draw keypoints and connections on canvas
 function drawPose(pose) {
     canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
-
+    console.log("draw pose");
     // Draw keypoints
     pose.keypoints.forEach(keypoint => {
         if (keypoint.score > 0.3) {
@@ -155,7 +155,7 @@ async function init() {
     errorElement = document.getElementById('error');
     exerciseSelector = document.getElementById('exercise-types');
 
-    // Add event listener for exercise type change
+    // // Add event listener for exercise type change
     exerciseSelector.addEventListener('change', (e) => {
         currentExercise = e.target.value;
         exerciseCount = 0;

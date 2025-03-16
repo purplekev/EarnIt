@@ -12,6 +12,9 @@
     <!-- TensorFlow.js -->
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.11.0/dist/tf.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/pose-detection@2.0.0/dist/pose-detection.min.js"></script>
+    <!-- Add this to the <head> section -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="charts.js"></script>
 </head>
 
 <body>
@@ -19,9 +22,9 @@
         <header>
             <div class="logo">
                 <i class="fas fa-dumbbell"></i>
-                <h1>EarnIt Exercise Tracker</h1>
+                <h1>EarnIt</h1>
             </div>
-            <p class="subtitle">Real-time exercise tracking powered by AI</p>
+            <p class="subtitle">Replace the chase with real, earned dopamine</p>
         </header>
 
         <main class="content">
@@ -64,24 +67,24 @@
                 </button>
             </div>
 
-            <div class="stats-container">
-                <div class="donut-chart">
-                    <svg width="200" height="200" viewBox="0 0 200 200">
-                        <circle cx="100" cy="100" r="80" fill="none" stroke="var(--error-color)" stroke-width="20" opacity="0.2"/>
-                        <circle cx="100" cy="100" r="80" fill="none" stroke="var(--success-color)" stroke-width="20"
-                                stroke-dasharray="502.4" stroke-dashoffset="401.92"
-                                transform="rotate(-90 100 100)" class="progress-ring"/>
-                    </svg>
-                    <div class="chart-label">
-                        <div class="percentage">20.0%</div>
-                        <div class="label">Accuracy</div>
-                    </div>
-                </div>
-                <div class="stats-text">
-                    <div class="correct"><i class="fas fa-check"></i> Correct Form: 20.0%</div>
-                    <div class="wrong"><i class="fas fa-xmark"></i> Incorrect Form: 80.0%</div>
-                </div>
-            </div>
+<!--            <div class="stats-container">-->
+<!--                <div class="donut-chart">-->
+<!--                    <svg width="200" height="200" viewBox="0 0 200 200">-->
+<!--                        <circle cx="100" cy="100" r="80" fill="none" stroke="var(&#45;&#45;error-color)" stroke-width="20" opacity="0.2"/>-->
+<!--                        <circle cx="100" cy="100" r="80" fill="none" stroke="var(&#45;&#45;success-color)" stroke-width="20"-->
+<!--                                stroke-dasharray="502.4" stroke-dashoffset="401.92"-->
+<!--                                transform="rotate(-90 100 100)" class="progress-ring"/>-->
+<!--                    </svg>-->
+<!--                    <div class="chart-label">-->
+<!--                        <div class="percentage">20.0%</div>-->
+<!--                        <div class="label">Accuracy</div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--                <div class="stats-text">-->
+<!--                    <div class="correct"><i class="fas fa-check"></i> Correct Form: 20.0%</div>-->
+<!--                    <div class="wrong"><i class="fas fa-xmark"></i> Incorrect Form: 80.0%</div>-->
+<!--                </div>-->
+<!--            </div>-->
 
             <div class="stats">
                 <div class="stats-header">
@@ -106,6 +109,18 @@
                     </div>
                 </div>
             </div>
+            <div class="charts-container">
+
+                <!-- Bar Chart -->
+                <div class="chart-container">
+                    <canvas id="barChart"></canvas>
+                </div>
+
+                <!-- Pie Chart -->
+                <div class="chart-container">
+                    <canvas id="pieChart"></canvas>
+                </div>
+            </div>
         </main>
         <div class="achievements-popup" id="achievement">
             <i class="fas fa-trophy"></i>
@@ -116,7 +131,7 @@
         </div>
 
         <button id="finishWorkout">Finish Workout</button>
-        <div id="error" class="error-message"></div>
+        <!-- <div id="error" class="error-message"></div> -->
     </div>
 
     <!-- Load our scripts -->
