@@ -354,6 +354,7 @@ h1 {
 header {
     text-align: center;
     position: relative;
+    padding-top: 40px;
     margin-bottom: -5000px;
 }
 
@@ -395,6 +396,7 @@ header {
     position: absolute;
     top: 1rem;
     right: 1rem;
+    margin-top: 40px;
     scale: 1.5;
 }
 
