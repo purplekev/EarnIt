@@ -2,7 +2,7 @@ let detector;
 let exerciseCount = 0;
 let isGoingDown = false;
 let lastExerciseTime = 0;
-let currentExercise = 'pushup';
+let currentActivity = 'pushups';
 
 let videoElement;
 let canvasElement;
@@ -10,10 +10,10 @@ let canvasCtx;
 let counterElement;
 let statusElement;
 let errorElement;
-let exerciseSelector;
+let activitySelect;
 
 document.getElementById("finishWorkout").addEventListener("click", function() {
-    window.postMessage({ type: "FROM_EXTENSION", data: `${exerciseCount}` }, "*");
+    window.postMessage({ type: "FROM_WEB_APP", data: `${exerciseCount}` }, "*");
 });
 
 // Initialize the webcam
@@ -45,7 +45,8 @@ async function loadModel() {
         enableSmoothing: true
     };
     detector = await poseDetection.createDetector(poseDetection.SupportedModels.MoveNet, detectorConfig);
-    statusElement.textContent = `Ready to count ${currentExercise === 'pushup' ? 'push-ups' : 'pull-ups'}!`;
+    const activityDisplay = currentActivity.charAt(0).toUpperCase() + currentActivity.slice(1);
+    statusElement.textContent = `Ready to count ${activityDisplay}!`;
 }
 
 // Calculate angle between three points
@@ -59,7 +60,7 @@ function calculateAngle(a, b, c) {
 // Draw keypoints and connections on canvas
 function drawPose(pose) {
     canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
-
+    console.log("draw pose");
     // Draw keypoints
     pose.keypoints.forEach(keypoint => {
         if (keypoint.score > 0.3) {
@@ -102,7 +103,7 @@ async function detectPose() {
                 const avgAngle = (leftAngle + rightAngle) / 2;
                 const now = Date.now();
 
-                if (currentExercise === 'pushup') {
+                if (currentActivity === 'pushups') {
                     // Push-up detection logic
                     if (avgAngle < 90 && !isGoingDown && (now - lastExerciseTime) > 1000) {
                         isGoingDown = true;
@@ -114,12 +115,7 @@ async function detectPose() {
                         counterElement.textContent = `Push-ups: ${exerciseCount}`;
                         statusElement.textContent = 'Push-up counted! Keep going!';
                     }
-
-                    // if (Number(exerciseCount) === Number(targetValue)) {
-                        // chrome.storage.local.set({ redirectEnabled: false });
-                        // chrome.tabs.update(details.tabId, { url: redirectUrl });
-                    // }
-                } else {
+                } else if (currentActivity === 'pullups') {
                     // Pull-up detection logic
                     const shoulderY = (leftShoulder.y + rightShoulder.y) / 2;
                     const chinAboveShoulder = nose.y < shoulderY - 20; // Threshold for chin over bar
@@ -134,6 +130,9 @@ async function detectPose() {
                         counterElement.textContent = `Pull-ups: ${exerciseCount}`;
                         statusElement.textContent = 'Pull-up counted! Keep going!';
                     }
+                } else if (currentActivity === 'squats') {
+                    // Squat detection logic
+                    // Implementation needed
                 }
             }
         }
@@ -153,15 +152,25 @@ async function init() {
     counterElement = document.getElementById('counter');
     statusElement = document.getElementById('status');
     errorElement = document.getElementById('error');
-    exerciseSelector = document.getElementById('exercise-types');
+    activitySelect = document.getElementById('activity-select');
 
-    // Add event listener for exercise type change
-    exerciseSelector.addEventListener('change', (e) => {
-        currentExercise = e.target.value;
+    // Add event listener for activity type change
+    activitySelect.addEventListener('change', (e) => {
+        currentActivity = e.target.value;
         exerciseCount = 0;
         isGoingDown = false;
-        counterElement.textContent = `${currentExercise === 'pushup' ? 'Push-ups' : 'Pull-ups'}: 0`;
-        statusElement.textContent = `Ready to count ${currentExercise === 'pushup' ? 'push-ups' : 'pull-ups'}!`;
+        // Update counter and status based on activity type
+        let activityDisplay = currentActivity.charAt(0).toUpperCase() + currentActivity.slice(1);
+        counterElement.textContent = `Minutes earned: ${exerciseCount}`;
+        if (['pushups', 'pullups', 'squats', 'meditation', 'reading'].includes(currentActivity)) {
+            statusElement.textContent = `Ready to count ${activityDisplay}!`;
+            videoElement.style.display = 'block';
+            canvasElement.style.display = 'block';
+        } else {
+            statusElement.textContent = `Timer ready for ${activityDisplay}`;
+            videoElement.style.display = 'none';
+            canvasElement.style.display = 'none';
+        }
     });
 
     try {

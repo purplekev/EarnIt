@@ -1,18 +1,33 @@
 document.addEventListener("DOMContentLoaded", async () => {
+
+  const recommendedList = document.getElementById("recommendedSites");
+  const disableRequestBtn = document.getElementById("disableRequest");
+
   const toggleRedirect = document.getElementById("toggleRedirect");
   const siteList = document.getElementById("siteList");
   const newSite = document.getElementById("newSite");
   const addSite = document.getElementById("addSite");
-  const token = document.getElementById("token");
-  const addToken = document.getElementById("addToken")
+  const productiveSiteList = document.getElementById("productiveSiteList");
+  const productiveSiteInput = document.getElementById("productiveSiteInput");
+  const addProductiveSite = document.getElementById("addProductiveSiteBtn");
 
   // Load saved data
-  const { blockedSites = [], redirectEnabled = true, redirectDisabled = false, timeOff = 0 } = await chrome.storage.local.get();
+  const {
+    blockedSites = [],
+    redirectEnabled = true,
+    redirectDisabled = false,
+    timeOff = 0,
+    productiveSites = [],
+
+    accountabilityEmail = null,
+    disableRequestPending = false
+  } = await chrome.storage.local.get();
 
   // Populate UI
   toggleRedirect.checked = redirectEnabled;
   toggleRedirect.unchecked = redirectDisabled
   blockedSites.forEach((site) => addSiteToList(site));
+  productiveSites.forEach((site) => addProductiveSiteToList(site));
 
   // Toggle redirect on/off
   toggleRedirect.addEventListener("change", () => {
@@ -21,44 +36,51 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   setInterval(updateTimeDisplays, 5000);
 
-  // // Event listener for the button click
-  // addToken.addEventListener("click", () => {
-  //     let tokenValue = Number(token.value) + 1;  // Use token.value to get the current value
 
-  //     // Update the displayed token count
-  //     token.value = tokenValue;  // Set token.value instead of tokenInput.value
+    // const recommendedList = document.getElementById("recommendedSites");
 
-  //     // Check if token count exceeds 10
-  //     if (tokenValue >= 10) {
-  //         toggleRedirect.checked = false;
-  //         chrome.storage.local.set({ redirectEnabled: false });
-  //     }
-  // });
+    chrome.runtime.sendMessage({ action: "analyzeHistory" });
 
-  // if (addToken) {
-  //     addToken.addEventListener('click', () => {
-  //         let tokenValue = Number(token.value) + 1;  // Use token.value to get the current value
-  //
-  //         // Update the displayed token count
-  //         token.value = tokenValue;  // Set token.value instead of tokenInput.value
-  //
-  //         // Check if token count exceeds 10
-  //         if (tokenValue >= 10) {
-  //             toggleRedirect.checked = false;
-  //             chrome.storage.local.set({ redirectEnabled: false });
-  //         }
-  //     });
-  // } else {
-  //     console.error("Element with id 'addToken' not found!");
-  // }
+// Fetch recommended sites from storage and display them
+chrome.storage.local.get("recommendedBlockedSites", (data) => {
+  recommendedList.innerHTML = ""; // Clear previous recommendations
 
+  if (data.recommendedBlockedSites && data.recommendedBlockedSites.length > 0) {
+      let totalVisits = data.recommendedBlockedSites.reduce((sum, [, count]) => sum + count, 0);
 
-  // token.addEventListener("change", () => {
-  //     if (token.value > 10) {
-  //         chrome.storage.local.set({ redirectEnabled: toggleRedirect.checked });
-  //     }
-  // })
+      data.recommendedBlockedSites.forEach(([domain, count]) => {
+          let listItem = document.createElement("li");
+          let percentage = ((count / totalVisits) * 100).toFixed(1); // Convert to percentage
 
+          listItem.textContent = `${domain} (${percentage}%)`;
+
+          // Check if site is already blocked
+          chrome.storage.local.get("blockedSites", (blockedData) => {
+              let blockedSites = blockedData.blockedSites || [];
+              if (blockedSites.includes(`${domain}`)) {
+                  listItem.style.color = "gray";  // Already blocked
+                  listItem.textContent = `${domain} (Blocked)`;
+              } else {
+                  listItem.style.cursor = "pointer";
+                  listItem.style.textDecoration = "underline"; // Indicate it's clickable
+                  listItem.style.color = "blue"; // Make it look like a link
+
+                  listItem.onclick = () => {
+                      blockSite(domain);
+                      listItem.style.color = "gray"; // Change color after being clicked
+                      listItem.textContent = `${domain} (Blocked)`;
+                  };
+              }
+
+              recommendedList.appendChild(listItem);
+          });
+      });
+  } else {
+      recommendedList.innerHTML = "<li>No recommendations yet.</li>";
+  }
+});
+
+  // Add site
   addSite.addEventListener("click", () => {
     const site = newSite.value.trim();
     if (site && !blockedSites.includes(site)) {
@@ -68,6 +90,18 @@ document.addEventListener("DOMContentLoaded", async () => {
       newSite.value = "";
     }
   });
+
+    // Add site
+    addSite.addEventListener("click", () => {
+      const site = newSite.value.trim();
+      if (site && !blockedSites.includes(site)) {
+        blockedSites.push(site);
+        chrome.storage.local.set({ blockedSites });
+        addSiteToList(site);
+        newSite.value = "";
+      }
+    });
+
 
 
   function addSiteToList(site) {
@@ -116,7 +150,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   async function updateTimeDisplays() {
-    const { urlStats = {} } = await chrome.storage.local.get('urlStats');
+    const {urlStats = {}} = await chrome.storage.local.get('urlStats');
 
     blockedSites.forEach(site => {
       const timeElement = document.getElementById(`time-${site.replace(/\./g, '-')}`);
@@ -127,4 +161,64 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
   }
 
+  // If there's a pending request, update UI accordingly
+  if (disableRequestPending) {
+    disableRequestBtn.textContent = "Request Pending...";
+    disableRequestBtn.disabled = true;
+  }
+
+  disableRequestBtn.addEventListener("click", async () => {
+    // Set the pending flag
+    await chrome.storage.local.set({ disableRequestPending: true });
+
+    // Update button state
+    disableRequestBtn.textContent = "Request Pending...";
+    disableRequestBtn.disabled = true;
+  });
+
+  // Modify the email display function
+  function displayAccountabilityEmail(email) {
+    const storedEmailDisplay = document.getElementById("storedEmail");
+    storedEmailDisplay.textContent = email || "No partner added";
+  }
+
+  // Add event listener for the accountability button
+  document.getElementById("add-accountability").addEventListener("click", () => {
+    const email = document.getElementById("newEmail").value.trim();
+    if (email) {
+      chrome.storage.local.set({accountabilityEmail: email});
+      displayAccountabilityEmail(email);
+      document.getElementById("newEmail").value = "";
+    }
+  });
+
+
+  // Add productive site
+  addProductiveSite.addEventListener("click", () => {
+    const site = productiveSiteInput.value.trim();
+    if (site && !productiveSites.includes(site)) {
+      productiveSites.push(site);
+      chrome.storage.local.set({ productiveSites });
+      addProductiveSiteToList(site);
+      productiveSiteInput.value = "";
+    }
+  });
+
+  // Add productive site to UI with remove button
+  function addProductiveSiteToList(site) {
+    const li = document.createElement("li");
+    li.textContent = site;
+    const removeBtn = document.createElement("button");
+    removeBtn.textContent = "Remove";
+    removeBtn.addEventListener("click", () => {
+      const index = productiveSites.indexOf(site);
+      if (index > -1) {
+        productiveSites.splice(index, 1);
+        chrome.storage.local.set({ productiveSites });
+        li.remove();
+      }
+    });
+    li.appendChild(removeBtn);
+    productiveSiteList.appendChild(li);
+  }
 });
